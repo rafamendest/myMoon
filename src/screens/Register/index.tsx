@@ -1,46 +1,48 @@
 import React from 'react';
-import {StyleSheet, View, SafeAreaView, StatusBar} from 'react-native';
-import {TextInput, Button, Snackbar} from 'react-native-paper';
-import appEmitter from '../../utils/appEmitter';
+import {StyleSheet, View, SafeAreaView, StatusBar, Text} from 'react-native';
+import {TextInput, Button} from 'react-native-paper';
 import { colors } from '../../utils/colors';
-import { auth } from '../../database/firebaseConnection'
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { db, auth } from '../../database/firebaseConnection'
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore'
 import { errorsAuth } from '../../utils/errors';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../store';
+import { useDispatch } from 'react-redux';
 import { showSnackbar, snackbarMessage } from '../../store/features/snackbarSlice';
 
-interface iLogin {
-  navigation: any;
-}
+interface iRegister {
+    navigation: any;
+  }
 
-function Login({ navigation }: iLogin): React.JSX.Element {
+function Register({ navigation }: iRegister): React.JSX.Element {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const { showSnackbar: snackBarOpen, message } = useSelector((state: RootState) => state.snackbar);
   const dispatch = useDispatch();
 
-  const onDismissSnackBar = () => {
-    dispatch(showSnackbar(false));
-    dispatch(snackbarMessage(''));
-  }
-
-  const doLogin = async () => {
+  const handleCreateUser = async () => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      appEmitter.emit('doLogin');
+        const response = await createUserWithEmailAndPassword(auth, email, password);
+        await setDoc(doc(db, "users", response.user.uid), {
+            nome: '',
+            cpf: '',
+            dataNascimento: ''
+        });
+        dispatch(showSnackbar(true));
+        dispatch(snackbarMessage('Cadastro feito com sucesso!'));
+        navigation.navigate('Entrar');
     } catch ({ code }: any) {
-      console.log(errorsAuth(code));
+        console.log(errorsAuth(code));
     } finally {
-      setEmail('');
-      setPassword('');
+        setEmail('');
+        setPassword('');
     }
-  }
+  } 
+
 
   return (
     <SafeAreaView style={styles.containerSafeView}>
     <StatusBar />
     <View style={styles.container}>
+    <Text style={styles.text}>Digite seu email e senha para cadastro</Text>
       <TextInput
         style={styles.containerEmail}
         label="Email"
@@ -57,20 +59,11 @@ function Login({ navigation }: iLogin): React.JSX.Element {
         onChangeText={text => setPassword(text)}
       />
       <View style={{height: 20}} />
-      <Button mode="text" onPress={() => doLogin()}>
-        Entrar
+      <Button mode="text" onPress={() => handleCreateUser()}>
+        Fazer Cadastro
       </Button>
-      <View style={{height: 40}} />
-      <Button mode="contained" onPress={() => navigation.navigate('Cadastrar')}>
-        Cadastrar
-      </Button>
+      <Text style={styles.textInfoPassword}>{"(A senha deve ter mais de 6 dígitos)"}</Text>
     </View>
-    <Snackbar
-        visible={snackBarOpen}
-        onDismiss={onDismissSnackBar}
-        >
-        {message}
-      </Snackbar>
     </SafeAreaView>
   );
 }
@@ -91,6 +84,13 @@ const styles = StyleSheet.create({
   containerPassword: {
     width: 300,
   },
+  text: {
+    marginBottom: 10,
+    fontSize: 16
+  },
+  textInfoPassword: {
+
+  }
 });
 
-export default Login;
+export default Register;

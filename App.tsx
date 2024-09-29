@@ -5,13 +5,16 @@
  * @format
  */
 
-import React, { useEffect, useState } from 'react';
-import {SafeAreaView, StatusBar, StyleSheet, Text, View} from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View} from 'react-native';
 import Login from './src/screens/Login';
-import {colors} from './src/utils/colors';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import appEmitter from './src/utils/appEmitter';
+import { createStackNavigator } from '@react-navigation/stack';
+import Register from './src/screens/Register';
+import { auth } from './src/database/firebaseConnection';
+import { Providers } from './src/providers';
 
 function HomeScreen() {
   return (
@@ -30,10 +33,11 @@ function SettingsScreen() {
 }
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
 function App(): React.JSX.Element {
 
-  const [isLogged, setIsLogged] = useState(true);
+  const [isLogged, setIsLogged] = useState(false);
 
   appEmitter.on('doLogin', () => {
     setIsLogged(true);
@@ -41,29 +45,30 @@ function App(): React.JSX.Element {
   
   return (
     <>
+    <Providers>
       <NavigationContainer>
-        {!isLogged && (
-          <SafeAreaView style={styles.container}>
-            <StatusBar />
-            <Login />
-          </SafeAreaView>
+        {!isLogged && !Boolean(auth.currentUser?.uid) && (
+          <Stack.Navigator initialRouteName="Entrar">
+            <Stack.Screen name="Entrar" component={Login} />
+            <Stack.Screen name="Cadastrar" component={Register} />
+          </Stack.Navigator>
+          
         )}
-        {isLogged && (
+        {isLogged && Boolean(auth.currentUser?.uid) && (
           <Tab.Navigator>
             <Tab.Screen name="Home" component={HomeScreen} />
             <Tab.Screen name="Settings" component={SettingsScreen} />
           </Tab.Navigator>
         )}
+        
       </NavigationContainer>
+      </Providers>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.backgroundContainer,
-  },
+  
 });
 
 export default App;
