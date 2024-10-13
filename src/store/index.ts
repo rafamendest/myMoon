@@ -1,5 +1,6 @@
 import {configureStore} from '@reduxjs/toolkit';
 import {snackbarSlice} from './features';
+import { userSlice } from './features/userSlice';
 
 /**
  * The Redux store.
@@ -8,6 +9,7 @@ export const store = configureStore({
   reducer: {
     // Add reducers here
     snackbar: snackbarSlice.reducer,
+    user: userSlice.reducer,
   },
 });
 

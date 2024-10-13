@@ -16,5 +16,9 @@ export const errorsAuth = (code : string) => {
         return 'Senha fraca, é necessário conter mais de 6 dígitos';
     } 
 
+    if (code === 'auth/email-already-in-use') {
+        return 'Esse email já está em uso';
+    } 
+
     return 'Ocorreu um erro';
 }

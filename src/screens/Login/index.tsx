@@ -9,6 +9,7 @@ import { errorsAuth } from '../../utils/errors';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { showSnackbar, snackbarMessage } from '../../store/features/snackbarSlice';
+import { setUserUid } from '../../store/features/userSlice';
 
 interface iLogin {
   navigation: any;
@@ -27,7 +28,8 @@ function Login({ navigation }: iLogin): React.JSX.Element {
 
   const doLogin = async () => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const user = await signInWithEmailAndPassword(auth, email, password);
+      dispatch(setUserUid(user.user.uid.toString()))
       appEmitter.emit('doLogin');
     } catch ({ code }: any) {
       console.log(errorsAuth(code));

@@ -15,14 +15,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Register from './src/screens/Register';
 import { auth } from './src/database/firebaseConnection';
 import { Providers } from './src/providers';
-
-function HomeScreen() {
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Home!</Text>
-    </View>
-  );
-}
+import HomeScreen from './src/screens/HomeScreen';
 
 function SettingsScreen() {
   return (
