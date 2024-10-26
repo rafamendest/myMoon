@@ -28,6 +28,7 @@ interface iRegister {
 }
 
 function Register({navigation}: iRegister): React.JSX.Element {
+  const dispatch = useDispatch();
   const onDismissSnackBar = () => {
     dispatch(showSnackbar(false));
     dispatch(snackbarMessage(''));
@@ -43,7 +44,7 @@ function Register({navigation}: iRegister): React.JSX.Element {
   const [date, setDate] = React.useState<Date | null>(null);
   const [openDatePicker, setOpenDatePicker] = React.useState(false);
   const [isValidCPF, setIsValidCPF] = React.useState(false);
-  const dispatch = useDispatch();
+  
 
   const handleCreateUser = async () => {
     try {
