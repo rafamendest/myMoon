@@ -17,15 +17,7 @@ import { auth } from './src/database/firebaseConnection';
 import { Providers } from './src/providers';
 import InitialPage from './src/screens/InitialPage';
 import HomeRoute from './src/router/HomeRoute';
-import HomeScreen from './src/screens/HomeScreen';
-
-function SettingsScreen() {
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Settings!</Text>
-    </View>
-  );
-}
+import Calendar from './src/screens/Calendar';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -53,7 +45,7 @@ function App(): React.JSX.Element {
         {isLogged && Boolean(auth.currentUser?.uid) && (
           <Tab.Navigator screenOptions={{headerShown: false}}>
             <Tab.Screen name="Home" component={HomeRoute} />
-            <Tab.Screen name="Settings" component={SettingsScreen} />
+            <Tab.Screen name="Ciclo" component={Calendar} />
           </Tab.Navigator>
         )}
         
