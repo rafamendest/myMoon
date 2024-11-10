@@ -1,8 +1,9 @@
-import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {colors} from '../../utils/colors';
-import {Button, Snackbar, TextInput} from 'react-native-paper';
+import {Button, Snackbar} from 'react-native-paper';
 import {useState} from 'react';
 import {doc, getDoc, collection, addDoc} from 'firebase/firestore';
+import {RadioButton} from 'react-native-paper';
 import {db} from '../../database/firebaseConnection';
 import {RootState} from '../../store';
 import {useDispatch, useSelector} from 'react-redux';
@@ -12,7 +13,7 @@ import {
 } from '../../store/features/snackbarSlice';
 
 const Report = () => {
-  const [report, setReport] = useState('');
+  const [oneChecked, setOneChecked] = useState('');
   const {userUid} = useSelector((state: RootState) => state.user);
   const {showSnackbar: snackBarOpen, message} = useSelector(
     (state: RootState) => state.snackbar,
@@ -39,31 +40,41 @@ const Report = () => {
         cpf: cpf,
         dataDaDenuncia: new Date().toString(),
         dataNascimento: dateBorn,
-        report: report,
       });
       dispatch(showSnackbar(true));
       dispatch(snackbarMessage('Denúncia feita com sucesso!'));
     } catch ({code}: any) {
       dispatch(showSnackbar(true));
       dispatch(snackbarMessage(code));
-    } finally {
-      setReport('');
     }
   };
 
   return (
     <SafeAreaView style={styles.containerSafeView}>
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.containerScroll}>
         <Text style={styles.textTitle}>Faça sua denúncia!</Text>
+        <View style={styles.viewQuestions}>
+          <Text style={styles.textQuestions}>Pergunta teste bla bla bla?</Text>
+          <View style={styles.radioContainer}>
+            <View style={styles.radioButton}>
+              <RadioButton
+                value="yes"
+                status={oneChecked === 'yes' ? 'checked' : 'unchecked'}
+                onPress={() => setOneChecked('yes')}
+              />
+              <Text>Sim</Text>
+            </View>
+            <View style={styles.radioButton}>
+              <RadioButton
+                value="no"
+                status={oneChecked === 'no' ? 'checked' : 'unchecked'}
+                onPress={() => setOneChecked('no')}
+              />
+              <Text>Não</Text>
+            </View>
+          </View>
+        </View>
 
-        <TextInput
-          style={styles.textReport}
-          label="Denúncia"
-          value={report}
-          onChangeText={text => setReport(text)}
-          multiline={true}
-          numberOfLines={7}
-        />
         <Button
           style={styles.button}
           mode="contained"
@@ -73,7 +84,7 @@ const Report = () => {
         <Snackbar visible={snackBarOpen} onDismiss={onDismissSnackBar}>
           {message}
         </Snackbar>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -83,17 +94,35 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.backgroundContainer,
   },
+  containerScroll: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  radioContainer: {
+    margin: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  radioButton: {
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
+  },
+  viewQuestions: {
+    marginBottom: 50,
+  },
+  textQuestions: {
+    fontSize: 16,
+  },
   button: {
     marginTop: 50,
   },
   textTitle: {
     fontSize: 20,
     fontWeight: '500',
-  },
-  container: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 20,
+    marginBottom: 50,
   },
   textReport: {
     marginTop: 30,
