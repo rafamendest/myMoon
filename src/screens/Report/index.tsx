@@ -11,9 +11,24 @@ import {
   showSnackbar,
   snackbarMessage,
 } from '../../store/features/snackbarSlice';
+import Questions from './Components/Questions';
 
 const Report = () => {
   const [oneChecked, setOneChecked] = useState('');
+  const [twoChecked, setTwoChecked] = useState('');
+  const [threeChecked, setThreeChecked] = useState('');
+  const [fourChecked, setFourChecked] = useState('');
+  const [fiveChecked, setFiveChecked] = useState('');
+  const [sixChecked, setSixChecked] = useState('');
+  const [sevenChecked, setSevenChecked] = useState('');
+  const [eigthChecked, setEightChecked] = useState('');
+  const [nineChecked, setNineChecked] = useState('');
+  const [tenChecked, setTenChecked] = useState('');
+  const [elevenChecked, setElevenChecked] = useState('');
+  const [twelveChecked, setTwelveChecked] = useState('');
+  const [thirteenChecked, setThirteenChecked] = useState('');
+  const [messageReport, setMessageReport] = useState('');
+
   const {userUid} = useSelector((state: RootState) => state.user);
   const {showSnackbar: snackBarOpen, message} = useSelector(
     (state: RootState) => state.snackbar,
@@ -54,27 +69,37 @@ const Report = () => {
       <ScrollView contentContainerStyle={styles.containerScroll}>
         <Text style={styles.textTitle}>Faça sua denúncia!</Text>
         <View style={styles.viewQuestions}>
-          <Text style={styles.textQuestions}>Pergunta teste bla bla bla?</Text>
-          <View style={styles.radioContainer}>
-            <View style={styles.radioButton}>
-              <RadioButton
-                value="yes"
-                status={oneChecked === 'yes' ? 'checked' : 'unchecked'}
-                onPress={() => setOneChecked('yes')}
-              />
-              <Text>Sim</Text>
-            </View>
-            <View style={styles.radioButton}>
-              <RadioButton
-                value="no"
-                status={oneChecked === 'no' ? 'checked' : 'unchecked'}
-                onPress={() => setOneChecked('no')}
-              />
-              <Text>Não</Text>
-            </View>
-          </View>
+          <Questions
+            oneChecked={oneChecked}
+            setOneChecked={setOneChecked}
+            twoChecked={twoChecked}
+            setTwoChecked={setTwoChecked}
+            threeChecked={threeChecked}
+            setThreeChecked={setThreeChecked}
+            fourChecked={fourChecked}
+            setFourChecked={setFourChecked}
+            fiveChecked={fiveChecked}
+            setFiveChecked={setFiveChecked}
+            sixChecked={sixChecked}
+            setSixChecked={setSixChecked}
+            sevenChecked={sevenChecked}
+            setSevenChecked={setSevenChecked}
+            eigthChecked={eigthChecked}
+            setEightChecked={setEightChecked}
+            nineChecked={nineChecked}
+            setNineChecked={setNineChecked}
+            tenChecked={tenChecked}
+            setTenChecked={setTenChecked}
+            elevenChecked={elevenChecked}
+            setElevenChecked={setElevenChecked}
+            twelveChecked={twelveChecked}
+            setTwelveChecked={setTwelveChecked}
+            thirteenChecked={thirteenChecked}
+            setThirteenChecked={setThirteenChecked}
+            messageReport={messageReport}
+            setMessageReport={setMessageReport}
+          />
         </View>
-
         <Button
           style={styles.button}
           mode="contained"
@@ -98,23 +123,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 20,
-  },
-  radioContainer: {
-    margin: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  radioButton: {
-    flexDirection: 'row',
-    alignContent: 'center',
-    alignItems: 'center',
+    paddingBottom: 100,
   },
   viewQuestions: {
     marginBottom: 50,
-  },
-  textQuestions: {
-    fontSize: 16,
+    width: '90%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   button: {
     marginTop: 50,
@@ -122,7 +137,6 @@ const styles = StyleSheet.create({
   textTitle: {
     fontSize: 20,
     fontWeight: '500',
-    marginBottom: 50,
   },
   textReport: {
     marginTop: 30,
