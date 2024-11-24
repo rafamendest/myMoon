@@ -155,12 +155,12 @@ function Register({navigation}: iRegister): React.JSX.Element {
             }}
           />
           <View style={{height: 20}} />
-          <Button mode="text" onPress={() => setOpenDatePicker(true)}>
-            Selecionar data de nascimento
+          <Button style={{width: 250, height: 50, justifyContent: 'center'}} mode="text" onPress={() => setOpenDatePicker(true)}>
+          <Text style={{ fontSize: 16 }}>Selecionar data de nascimento</Text>
           </Button>
           <View style={{height: 20}} />
-          <Button mode="contained" onPress={() => handleCreateUser()}>
-            Fazer Cadastro
+          <Button style={{width: 200, height: 50, justifyContent: 'center'}} mode="contained" onPress={() => handleCreateUser()}>
+          <Text style={{ fontSize: 18 }}>Fazer Cadastro</Text>
           </Button>
           <Text style={styles.textInfoPassword}>
             {'(A senha deve ter mais de 6 dígitos)'}
