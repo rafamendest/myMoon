@@ -50,10 +50,11 @@ const HomeScreen = ({navigation}: iHomeScreen) => {
         />
         {firstName?.length > 0 && <Text>Olá {firstName}, seja bem vinda!</Text>}
         <Button
+
           style={styles.button}
           mode="contained"
           onPress={() => navigation.navigate('Denúncia')}>
-          Registrar novo ciclo
+          <Text style={{ fontSize: 18 }}>Registrar novo ciclo</Text>
         </Button>
       </View>
       <Snackbar visible={snackBarOpen} onDismiss={onDismissSnackBar}>
@@ -69,6 +70,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.backgroundContainer,
   },
   button: {
+    width: 250,
+    height: 50,
+    justifyContent: 'center',
     marginTop: 100,
   },
   image: {

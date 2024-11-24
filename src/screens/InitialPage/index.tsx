@@ -24,11 +24,11 @@ function InitialPage({ navigation }: iInitialPage): React.JSX.Element {
     </Text>
     <View style={{height: 50}} />
       <Button style={styles.button} mode="contained" onPress={() => navigation.navigate('Entrar')}>
-        Entrar
+      <Text style={{ fontSize: 18 }}>Entrar</Text>
       </Button>
       <View style={{height: 10}} />
       <Button style={styles.button} mode="contained" onPress={() => navigation.navigate('Cadastrar')}>
-        Cadastrar
+      <Text style={{ fontSize: 18 }}>Cadastrar</Text>
       </Button>
     </View>
     </SafeAreaView>
@@ -48,6 +48,8 @@ const styles = StyleSheet.create({
   },
   button: {
     width: 200,
+    height: 50,
+    justifyContent: 'center',
   },
   image: {
     width: 300, 

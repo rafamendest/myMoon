@@ -52,9 +52,6 @@ function App(): React.JSX.Element {
                 name="Home"
                 component={HomeRoute}
                 options={{
-                  tabBarStyle: {
-                    height: 40,  
-                  },
                   tabBarLabel: () => null,
                   tabBarIcon: () => (
                     <Image
@@ -69,9 +66,6 @@ function App(): React.JSX.Element {
                 name="Ciclo"
                 component={Calendar}
                 options={{
-                  tabBarStyle: {
-                    height: 40,  
-                  },
                   tabBarLabel: () => null,
                   tabBarIcon: () => (
                     <Image

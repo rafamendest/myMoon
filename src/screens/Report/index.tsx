@@ -131,7 +131,7 @@ const Report = ({ navigation }: iReport) => {
           style={styles.button}
           mode="contained"
           onPress={() => handleRegisterReport()}>
-          Registrar denúncia
+          <Text style={{ fontSize: 18 }}>Registrar denúncia</Text>
         </Button>
         <Snackbar visible={snackBarOpen} onDismiss={onDismissSnackBar}>
           {message}
@@ -159,7 +159,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    marginTop: 50,
+    width: 250,
+    height: 50,
+    justifyContent: 'center',
   },
   textTitle: {
     fontSize: 20,
