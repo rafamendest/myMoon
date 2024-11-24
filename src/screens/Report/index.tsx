@@ -13,7 +13,11 @@ import {
 } from '../../store/features/snackbarSlice';
 import Questions from './Components/Questions';
 
-const Report = () => {
+interface iReport {
+  navigation: any;
+}
+
+const Report = ({ navigation }: iReport) => {
   const [oneChecked, setOneChecked] = useState('');
   const [twoChecked, setTwoChecked] = useState('');
   const [threeChecked, setThreeChecked] = useState('');
@@ -28,6 +32,8 @@ const Report = () => {
   const [twelveChecked, setTwelveChecked] = useState('');
   const [thirteenChecked, setThirteenChecked] = useState('');
   const [messageReport, setMessageReport] = useState('');
+  const [foneNumber, setFoneNumber] = useState('');
+  const [familyWave, setFamilyWave] = useState('');
 
   const {userUid} = useSelector((state: RootState) => state.user);
   const {showSnackbar: snackBarOpen, message} = useSelector(
@@ -55,9 +61,26 @@ const Report = () => {
         cpf: cpf,
         dataDaDenuncia: new Date().toString(),
         dataNascimento: dateBorn,
+        pergunta1: oneChecked,
+        pergunta2: twoChecked,
+        pergunta3: threeChecked,
+        pergunta4: fourChecked,
+        pergunta5: fiveChecked,
+        pergunta6: sixChecked,
+        pergunta7: sevenChecked,
+        pergunta8: eigthChecked,
+        pergunta9: nineChecked,
+        pergunta10: tenChecked,
+        pergunta11: elevenChecked,
+        pergunta12: twelveChecked,
+        pergunta13: thirteenChecked,
+        mensagem: messageReport,
+        telefone: foneNumber,
+        parentesco: familyWave,
       });
       dispatch(showSnackbar(true));
       dispatch(snackbarMessage('Denúncia feita com sucesso!'));
+      navigation.navigate('Início');
     } catch ({code}: any) {
       dispatch(showSnackbar(true));
       dispatch(snackbarMessage(code));
@@ -98,6 +121,10 @@ const Report = () => {
             setThirteenChecked={setThirteenChecked}
             messageReport={messageReport}
             setMessageReport={setMessageReport}
+            foneNumber={foneNumber}
+            setFoneNumber={setFoneNumber}
+            familyWave={familyWave}
+            setFamilyWave={setFamilyWave}
           />
         </View>
         <Button

@@ -16,13 +16,13 @@ const Calendar = () => {
   const getDate = async () => {
     const docRefName = doc(db, 'users', userUid);
     const response = await getDoc(docRefName);
-    if (Boolean(response.get('startDateCycle'))) {
-      const startDateCycle = response.get('startDateCycle');
+    if (Boolean(response.get('dataInicialCiclo'))) {
+      const startDateCycle = response.get('dataInicialCiclo');
       const startDate = new Date(startDateCycle.seconds * 1000);
       setStartDate(startDate);
     }
-    if (Boolean(response.get('endDateCycle'))) {
-      const endDateCycle = response.get('endDateCycle');
+    if (Boolean(response.get('dataFinalCiclo'))) {
+      const endDateCycle = response.get('dataFinalCiclo');
     const endDate = new Date(endDateCycle.seconds * 1000);
     setEndDate(endDate);
     }
@@ -40,8 +40,8 @@ const Calendar = () => {
       setStartDate(null);
       setEndDate(null);
       await updateDoc(doc(db, 'users', userUid), {
-        startDateCycle: null,
-        endDateCycle: null,
+        dataInicialCiclo: null,
+        dataFinalCiclo: null,
       });
       return;
     }
@@ -50,8 +50,8 @@ const Calendar = () => {
     newEndDate.setDate(newEndDate.getDate() + 28);
     setEndDate(newEndDate);
     await updateDoc(doc(db, 'users', userUid), {
-      startDateCycle: date,
-      endDateCycle: newEndDate,
+      dataInicialCiclo: date,
+      dataFinalCiclo: newEndDate,
     });
   };
 

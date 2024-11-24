@@ -30,6 +30,10 @@ interface iQuestions {
   setThirteenChecked: (value: string) => void;
   messageReport: string;
   setMessageReport: (value: string) => void;
+  foneNumber: string;
+  setFoneNumber: (value: string) => void;
+  familyWave: string;
+  setFamilyWave: (value: string) => void;
 }
 
 const Questions = ({
@@ -61,6 +65,10 @@ const Questions = ({
   twoChecked,
   messageReport,
   setMessageReport,
+  foneNumber,
+  setFoneNumber,
+  familyWave,
+  setFamilyWave
 }: iQuestions) => {
   return (
     <>
@@ -345,9 +353,29 @@ const Questions = ({
       </View>
       <TextInput
         style={styles.textBox}
-        label={'Coloquer mais detalhes aqui - Opcional'}
+        label={'Coloque mais detalhes aqui - Opcional'}
         onChangeText={text => setMessageReport(text)}
         value={messageReport}
+      />
+
+      <View style={styles.textTelephone}>
+        <Text>Caso queira deixar telefone de algum parente</Text>
+      </View>
+      <TextInput
+        style={styles.textBoxTelephone}
+        label={'Digite aqui'}
+        onChangeText={value => setFoneNumber(value)}
+        value={foneNumber}
+        keyboardType='numeric'
+      />
+      <View style={styles.textBoxParentesc}>
+        <Text>Qual o parentesco desse telefone?</Text>
+      </View>
+      <TextInput
+        style={styles.textBoxTelephone}
+        label={'Ex: Pai, Mãe...'}
+        onChangeText={value => setFamilyWave(value)}
+        value={familyWave}
       />
     </>
   );
@@ -374,6 +402,18 @@ const styles = StyleSheet.create({
     maxHeight: 400,
     width: '90%',
   },
+  textBoxTelephone: {
+    maxHeight: 400,
+    width: '90%',
+  },
+  textTelephone: {
+    fontSize: 16,
+    marginTop: 40,
+  },
+  textBoxParentesc: {
+    fontSize: 16,
+    marginTop: 20,
+  }
 });
 
 export default Questions;
