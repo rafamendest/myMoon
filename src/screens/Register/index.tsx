@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -6,6 +6,7 @@ import {
   StatusBar,
   Text,
   ScrollView,
+  Image,
 } from 'react-native';
 import {TextInput, Button, Snackbar} from 'react-native-paper';
 import {colors} from '../../utils/colors';
@@ -21,13 +22,102 @@ import {
 import DatePicker from 'react-native-date-picker';
 import {cpfValidade} from './cpfValidade';
 import {RootState} from '../../store';
-import { errosValidades } from './errosValidades';
+import {errosValidades} from './errosValidades';
+import { PermissionsAndroid } from 'react-native';
+import { launchCamera } from 'react-native-image-picker';
+import axios from 'axios';
+import RNFS from 'react-native-fs';
+import { API_URL, API_TOKEN } from '@env';
 
 interface iRegister {
   navigation: any;
 }
 
 function Register({navigation}: iRegister): React.JSX.Element {
+
+  const [hasPermission, setHasPermission] = useState(false);
+  const [gender, setGender] = useState('');
+
+ 
+
+  const handleApi = async (base64String: string) => {
+    // Montando a requisição com a imagem em Base64
+    const formData = new FormData();
+    formData.append('photo', base64String);
+    try {
+      const response = await axios.post(API_URL, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Necessário para envio de arquivos
+          token: API_TOKEN, // Cabeçalho de autenticação
+        },
+      });
+      setGender(response?.data[0]?.gender?.value as string);
+      if (response?.data[0]?.gender?.value) {
+        dispatch(showSnackbar(true));
+        dispatch(snackbarMessage('Reconhecimento facial feito com sucesso!'));
+      }
+    } catch (e) {
+      console.log('erro: ', e);
+    } 
+  };
+
+  
+
+  const convertToBase64 = async (uri: string) => {
+    try {
+      const base64String = await RNFS.readFile(uri, 'base64');
+      await handleApi(base64String);
+    } catch (error) {
+      console.error('Erro ao converter para Base64:', error);
+    }
+  };
+
+  const openCamera = () => {
+    if (!hasPermission) {
+      dispatch(showSnackbar(true));
+      dispatch(snackbarMessage('Ative as permissões de câmera antes!'));
+      return;
+    }
+    launchCamera(
+      {
+        mediaType: 'photo',
+        saveToPhotos: true,
+      },
+      async (response) => {
+        if (response.didCancel) {
+          console.log('Ação cancelada');
+        } else if (response.errorCode) {
+          console.log('Erro', response.errorMessage || 'Erro desconhecido');
+        } else {
+          const uri = response.assets?.[0]?.uri;
+          if (uri) {
+            await convertToBase64(uri);
+          }
+        }
+      }
+    );
+  };
+  
+  const requestCameraPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'Permissão para Usar a Câmera',
+          message: 'O aplicativo precisa de acesso à sua câmera',
+          buttonNeutral: 'Perguntar Depois',
+          buttonNegative: 'Cancelar',
+          buttonPositive: 'OK',
+        }
+      );
+      setHasPermission(granted === PermissionsAndroid.RESULTS.GRANTED);
+    } catch (err) {
+      console.warn(err);
+      return false;
+    }
+  };
+
+
   const dispatch = useDispatch();
   const onDismissSnackBar = () => {
     dispatch(showSnackbar(false));
@@ -44,11 +134,21 @@ function Register({navigation}: iRegister): React.JSX.Element {
   const [date, setDate] = React.useState<Date | null>(null);
   const [openDatePicker, setOpenDatePicker] = React.useState(false);
   const [isValidCPF, setIsValidCPF] = React.useState(false);
-  
 
   const handleCreateUser = async () => {
+    if (gender == 'Male') {
+      dispatch(showSnackbar(true));
+      dispatch(snackbarMessage('Cadastro não autorizado: este aplicativo é destinado exclusivamente para mulheres. Se você acredita que houve um erro, entre em contato com o suporte.'));
+      return;
+    }
     try {
-      const noErrors = errosValidades({ cpf, date, isValidCPF, firstName, secondName })
+      const noErrors = errosValidades({
+        cpf,
+        date,
+        isValidCPF,
+        firstName,
+        secondName,
+      });
       if (!noErrors.noErrors) {
         dispatch(showSnackbar(true));
         dispatch(snackbarMessage(noErrors.message));
@@ -75,10 +175,14 @@ function Register({navigation}: iRegister): React.JSX.Element {
       setEmail('');
       setFirstName('');
       setCpf('');
-      setPassword('')
+      setPassword('');
       setDate(null);
     }
   };
+
+  useEffect(() => {
+    requestCameraPermission();
+  }, [])
 
   return (
     <SafeAreaView style={styles.containerSafeView}>
@@ -155,12 +259,26 @@ function Register({navigation}: iRegister): React.JSX.Element {
             }}
           />
           <View style={{height: 20}} />
-          <Button style={{width: 250, height: 50, justifyContent: 'center'}} mode="text" onPress={() => setOpenDatePicker(true)}>
-          <Text style={{ fontSize: 16 }}>Selecionar data de nascimento</Text>
+          <Button
+            style={{width: 250, height: 50, justifyContent: 'center'}}
+            mode="text"
+            onPress={() => setOpenDatePicker(true)}>
+            <Text style={{fontSize: 16}}>Selecionar data de nascimento</Text>
           </Button>
           <View style={{height: 20}} />
-          <Button style={{width: 200, height: 50, justifyContent: 'center'}} mode="contained" onPress={() => handleCreateUser()}>
-          <Text style={{ fontSize: 18 }}>Fazer Cadastro</Text>
+          <Button
+            style={{width: 250, height: 50, justifyContent: 'center'}}
+            mode="contained"
+            onPress={() => openCamera()}>
+            <Text style={{fontSize: 18}}>Fazer reconhecimento facial</Text>
+          </Button>
+          <View style={{height: 20}} />
+          <Button
+            style={{width: 200, height: 50, justifyContent: 'center'}}
+            mode="contained"
+            disabled={gender.length === 0}
+            onPress={() => handleCreateUser()}>
+            <Text style={{fontSize: 18}}>Fazer Cadastro</Text>
           </Button>
           <Text style={styles.textInfoPassword}>
             {'(A senha deve ter mais de 6 dígitos)'}

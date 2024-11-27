@@ -2,7 +2,10 @@
   "compilerOptions": {
     "paths": {
       "@firebase/auth": ["./node_modules/@firebase/auth/dist/index.rn.d.ts"]
-    }
+    },
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
   },
-  "extends": "@react-native/typescript-config/tsconfig.json"
+  "extends": "@react-native/typescript-config/tsconfig.json",
+  "include": ["env.d.ts", "src/**/*"],
 }

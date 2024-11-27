@@ -44,17 +44,16 @@ const HomeScreen = ({navigation}: iHomeScreen) => {
       <View
         style={{justifyContent: 'center', alignItems: 'center', marginTop: 20}}>
         <Image
-          source={require('../../assets/images/moon3.png')}
+          source={require('../../assets/images/moon.png')}
           style={styles.image}
           resizeMode="contain"
         />
         {firstName?.length > 0 && <Text>Olá {firstName}, seja bem vinda!</Text>}
         <Button
-
           style={styles.button}
           mode="contained"
           onPress={() => navigation.navigate('Denúncia')}>
-          <Text style={{ fontSize: 18 }}>Registrar novo ciclo</Text>
+          <Text style={{fontSize: 18}}>Registrar novo ciclo</Text>
         </Button>
       </View>
       <Snackbar visible={snackBarOpen} onDismiss={onDismissSnackBar}>

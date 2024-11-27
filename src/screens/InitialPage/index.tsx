@@ -14,7 +14,7 @@ function InitialPage({ navigation }: iInitialPage): React.JSX.Element {
     <StatusBar />
     <View style={styles.container}>
     <Image 
-          source={require('../../assets/images/moon3.png')} 
+          source={require('../../assets/images/moon.png')} 
           style={styles.image} 
           resizeMode="contain"
         />
@@ -52,8 +52,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   image: {
-    width: 300, 
-    height: 300,
+    width: 250, 
+    height: 250,
     // marginBottom: 20,
   },
   text: {
