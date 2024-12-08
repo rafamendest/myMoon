@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -6,7 +6,7 @@ import {
   StatusBar,
   Text,
   ScrollView,
-  Image,
+  TouchableOpacity,
 } from 'react-native';
 import {TextInput, Button, Snackbar} from 'react-native-paper';
 import {colors} from '../../utils/colors';
@@ -23,22 +23,20 @@ import DatePicker from 'react-native-date-picker';
 import {cpfValidade} from './cpfValidade';
 import {RootState} from '../../store';
 import {errosValidades} from './errosValidades';
-import { PermissionsAndroid } from 'react-native';
-import { launchCamera } from 'react-native-image-picker';
+import {PermissionsAndroid} from 'react-native';
+import {launchCamera} from 'react-native-image-picker';
 import axios from 'axios';
 import RNFS from 'react-native-fs';
-import { API_URL, API_TOKEN } from '@env';
+import {API_URL, API_TOKEN} from '@env';
+import {Checkbox} from 'react-native-paper';
 
 interface iRegister {
   navigation: any;
 }
 
 function Register({navigation}: iRegister): React.JSX.Element {
-
   const [hasPermission, setHasPermission] = useState(false);
   const [gender, setGender] = useState('');
-
- 
 
   const handleApi = async (base64String: string) => {
     // Montando a requisição com a imagem em Base64
@@ -58,10 +56,8 @@ function Register({navigation}: iRegister): React.JSX.Element {
       }
     } catch (e) {
       console.log('erro: ', e);
-    } 
+    }
   };
-
-  
 
   const convertToBase64 = async (uri: string) => {
     try {
@@ -83,7 +79,7 @@ function Register({navigation}: iRegister): React.JSX.Element {
         mediaType: 'photo',
         saveToPhotos: true,
       },
-      async (response) => {
+      async response => {
         if (response.didCancel) {
           console.log('Ação cancelada');
         } else if (response.errorCode) {
@@ -94,10 +90,10 @@ function Register({navigation}: iRegister): React.JSX.Element {
             await convertToBase64(uri);
           }
         }
-      }
+      },
     );
   };
-  
+
   const requestCameraPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -108,7 +104,7 @@ function Register({navigation}: iRegister): React.JSX.Element {
           buttonNeutral: 'Perguntar Depois',
           buttonNegative: 'Cancelar',
           buttonPositive: 'OK',
-        }
+        },
       );
       setHasPermission(granted === PermissionsAndroid.RESULTS.GRANTED);
     } catch (err) {
@@ -116,7 +112,6 @@ function Register({navigation}: iRegister): React.JSX.Element {
       return false;
     }
   };
-
 
   const dispatch = useDispatch();
   const onDismissSnackBar = () => {
@@ -126,6 +121,8 @@ function Register({navigation}: iRegister): React.JSX.Element {
   const {showSnackbar: snackBarOpen, message} = useSelector(
     (state: RootState) => state.snackbar,
   );
+
+  const [checked, setChecked] = React.useState(false);
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [firstName, setFirstName] = React.useState('');
@@ -138,7 +135,11 @@ function Register({navigation}: iRegister): React.JSX.Element {
   const handleCreateUser = async () => {
     if (gender == 'Male') {
       dispatch(showSnackbar(true));
-      dispatch(snackbarMessage('Cadastro não autorizado: este aplicativo é destinado exclusivamente para mulheres. Se você acredita que houve um erro, entre em contato com o suporte.'));
+      dispatch(
+        snackbarMessage(
+          'Cadastro não autorizado: este aplicativo é destinado exclusivamente para mulheres. Se você acredita que houve um erro, entre em contato com o suporte.',
+        ),
+      );
       return;
     }
     try {
@@ -182,7 +183,7 @@ function Register({navigation}: iRegister): React.JSX.Element {
 
   useEffect(() => {
     requestCameraPermission();
-  }, [])
+  }, []);
 
   return (
     <SafeAreaView style={styles.containerSafeView}>
@@ -266,6 +267,13 @@ function Register({navigation}: iRegister): React.JSX.Element {
             <Text style={{fontSize: 16}}>Selecionar data de nascimento</Text>
           </Button>
           <View style={{height: 20}} />
+          <Text style={{ marginBottom: 10 }}>Aceito compartilhar meus dados acima para fins de cadastro</Text>
+          <TouchableOpacity
+            onPress={() => setChecked(!checked)}
+            style={[styles.checkbox, checked && styles.checked]}>
+            {checked && <Text style={styles.checkmark}>✓</Text>}
+          </TouchableOpacity>
+          <View style={{height: 20}} />
           <Button
             style={{width: 250, height: 50, justifyContent: 'center'}}
             mode="contained"
@@ -276,13 +284,11 @@ function Register({navigation}: iRegister): React.JSX.Element {
           <Button
             style={{width: 200, height: 50, justifyContent: 'center'}}
             mode="contained"
-            disabled={gender.length === 0}
+            disabled={gender.length === 0 || !checked}
             onPress={() => handleCreateUser()}>
             <Text style={{fontSize: 18}}>Fazer Cadastro</Text>
           </Button>
-          <Text style={styles.textInfoPassword}>
-            {'(A senha deve ter mais de 6 dígitos)'}
-          </Text>
+          <Text>{'(A senha deve ter mais de 6 dígitos)'}</Text>
           <Snackbar visible={snackBarOpen} onDismiss={onDismissSnackBar}>
             {message}
           </Snackbar>
@@ -317,7 +323,22 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontSize: 16,
   },
-  textInfoPassword: {},
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checked: {
+    backgroundColor: '#79b6c9',
+  },
+  checkmark: {
+    color: 'black',
+    fontWeight: 'bold',
+  },
 });
 
 export default Register;
